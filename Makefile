@@ -1,4 +1,5 @@
 
+TARGET_ARCH=$(shell uname -m)
 all: app
 
 helper.o: helper.cu Makefile
@@ -9,8 +10,8 @@ helper.o: helper.cu Makefile
 
 app: app.cpp helper.h helper.o Makefile
 	g++ -o app app.cpp helper.o  \
-    -I/usr/local/cuda/targets/aarch64-linux/include \
-    -L/usr/local/cuda/targets/aarch64-linux/lib/ \
+    -I/usr/local/cuda/targets/$(TARGET_ARCH)-linux/include \
+    -L/usr/local/cuda/targets/$(TARGET_ARCH)-linux/lib/ \
     -lcudart 
 
 clean:
