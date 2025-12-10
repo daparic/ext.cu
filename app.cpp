@@ -4,6 +4,7 @@
 #include "helper.h"
 
 int main(int args, char **vargs) {
+    cudaError_t err;
     const int HEIGHT = 5; // 1024;
     const int WIDTH = 5;  // 1024;
     const int SIZE = WIDTH * HEIGHT * sizeof(float);
@@ -25,14 +26,15 @@ int main(int args, char **vargs) {
     cudaMemcpy(Md, M, SIZE, cudaMemcpyHostToDevice);
     float *Bd = NULL;
     cudaMalloc((void **)&Bd, SIZE);
-    do_transpose(gDim, bDim, Md, Bd, WIDTH);
-    cudaMemcpy(M, Bd, SIZE, cudaMemcpyDeviceToHost);
-
-    for (int i = 0; i < 3; i++) {
-        printf("%f ", M[i]);
-    }
+    err = do_transpose(gDim, bDim, Md, Bd, WIDTH);
+    if (err == cudaSuccess) {
+        cudaMemcpy(M, Bd, SIZE, cudaMemcpyDeviceToHost);
+        for (int i = 0; i < 3; i++) {
+            printf("%f ", M[i]);
+        }
+    } 
 
     free(M);
-    printf("*** done ***\n");
+    printf("\n*** done ***\n");
     return 0;
 }
